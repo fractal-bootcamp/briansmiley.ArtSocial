@@ -1,16 +1,21 @@
-import type { MetaFunction } from "@remix-run/node";
+import { UserButton } from "@clerk/remix";
+import { getAuth } from "@clerk/remix/ssr.server";
+import { LoaderFunction, redirect } from "@remix-run/node";
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" }
-  ];
+export const loader: LoaderFunction = async args => {
+  const { userId } = await getAuth(args);
+  if (!userId) {
+    return redirect("/sign-in");
+  }
+  return {};
 };
 
 export default function Index() {
   return (
     <div>
-      <h1>Hello World</h1>
+      <h1>Index route</h1>
+      <p>You are signed in!</p>
+      <UserButton />
     </div>
   );
 }
